@@ -43,6 +43,10 @@ shutil.rmtree(os.path.join(extract_dir, "META-INF"))
 
 # extract mods
 for mod in sorted(os.listdir(MOD_DIR)):
+    if mod.startswith('_'):
+        # skip mods prefixed with an underscore
+        continue
+
     if mod.endswith('zip'):
         print "Installing mod '%s'..." % os.path.splitext(mod)[0]
         mod_zip = zipfile.ZipFile(os.path.join(MOD_DIR, mod))
