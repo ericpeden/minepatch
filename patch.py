@@ -20,9 +20,9 @@ class Error(Exception):
 class MissingModDirectory(Error):
     pass
 
-CLEAN = "minecraft.jar"
-PATCHED = "minecraft_patched.jar"
-MOD_DIR = "mods"
+CLEAN = "../minecraft_clean.jar"
+PATCHED = "../minecraft.jar"
+MOD_DIR = "../ModLibrary"
 
 if not os.path.exists(MOD_DIR):
     raise MissingModDirectory(os.path.abspath(MOD_DIR))
