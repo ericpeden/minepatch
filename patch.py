@@ -43,14 +43,27 @@ shutil.rmtree(os.path.join(extract_dir, "META-INF"))
 
 # extract mods
 for mod in sorted(os.listdir(MOD_DIR)):
+    mod_relpath = os.path.join(MOD_DIR, mod)
+
     if mod.startswith('_'):
         # skip mods prefixed with an underscore
         continue
 
     if mod.endswith('zip'):
-        print "Installing mod '%s'..." % os.path.splitext(mod)[0]
-        mod_zip = zipfile.ZipFile(os.path.join(MOD_DIR, mod))
+        print "Installing zipped mod '%s'..." % os.path.splitext(mod)[0]
+        mod_zip = zipfile.ZipFile(mod_relpath)
         mod_zip.extractall(path=extract_dir)
+    elif os.path.isdir(mod_relpath):
+        print "Installing extracted mod '%s'..." % mod
+        for dirpath, dirnames, filenames in os.walk(mod_relpath):
+            # get the path relative to the mod directory
+            reldir = os.path.relpath(dirpath, mod_relpath)
+            # make any required parent directories underneath the extracted dir
+            install_dir = os.path.join(extract_dir, reldir)
+            if not os.path.exists(install_dir):
+                os.makedirs(install_dir)
+            for f in filenames:
+                shutil.copy2(os.path.join(dirpath, f), install_dir)
     else:
         raise Error("unrecognized type of mod for '%s'" % mod)
 
